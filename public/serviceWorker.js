@@ -16,7 +16,7 @@ this.addEventListener("install", (event) => {
       })
     );
   });
-  console.log(navigator,'IIIIIII')
+
   this.addEventListener("fetch", (event) => {
 
     if (!navigator.onLine) {

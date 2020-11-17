@@ -1,65 +1,81 @@
-import React, { Component } from 'react';
-
+import React, { Component } from "react";
+import CameraAltIcon from '@material-ui/icons/CameraAlt';
 export default class CameraFeed extends Component {
-    /**
-     * Processes available devices and identifies one by the label
-     * @memberof CameraFeed
-     * @instance
-     */
-    processDevices(devices) {
-        devices.forEach(device => {
-            console.log(device.label);
-            this.setDevice(device);
-        });
-    }
+  /**
+   * Processes available devices and identifies one by the label
+   * @memberof CameraFeed
+   * @instance
+   */
+  processDevices(devices) {
+    devices.forEach((device) => {
+      console.log(device.label);
+      this.setDevice(device);
+    });
+  }
 
-    /**
-     * Sets the active device and starts playing the feed
-     * @memberof CameraFeed
-     * @instance
-     */
-    async setDevice(device) {
-        const { deviceId } = device;
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { deviceId } });
-        this.videoPlayer.srcObject = stream;
-        this.videoPlayer.play();
-    }
+  /**
+   * Sets the active device and starts playing the feed
+   * @memberof CameraFeed
+   * @instance
+   */
+  async setDevice(device) {
+    const { deviceId } = device;
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: { deviceId },
+    });
+    this.videoPlayer.srcObject = stream;
+    this.videoPlayer.play();
+  }
 
-    /**
-     * On mount, grab the users connected devices and process them
-     * @memberof CameraFeed
-     * @instance
-     * @override
-     */
-    async componentDidMount() {
-        const cameras = await navigator.mediaDevices.enumerateDevices();
-        this.processDevices(cameras);
-    }
+  /**
+   * On mount, grab the users connected devices and process them
+   * @memberof CameraFeed
+   * @instance
+   * @override
+   */
+  async componentDidMount() {
+    const cameras = await navigator.mediaDevices.enumerateDevices();
+    this.processDevices(cameras);
+  }
 
-    /**
-     * Handles taking a still image from the video feed on the camera
-     * @memberof CameraFeed
-     * @instance
-     */
-    takePhoto = () => {
-        const { sendFile } = this.props;
-        
-        const context = this.canvas.getContext('2d');
-        context.drawImage(this.videoPlayer, 0, 0, 480, 260);
-        this.canvas.toBlob(sendFile);
-    };
+  /**
+   * Handles taking a still image from the video feed on the camera
+   * @memberof CameraFeed
+   * @instance
+   */
+  takePhoto = () => {
+    const { sendFile } = this.props;
 
-    render() {
-        return (
-            <div className="c-camera-feed">
-                <div className="c-camera-feed__viewer">
-                    <video ref={ref => (this.videoPlayer = ref)} width="680" heigh="360" />
-                </div>
-                <button onClick={this.takePhoto}>Take photo!</button>
-                <div className="c-camera-feed__stage">
-                    <canvas width="480" height="260" ref={ref => (this.canvas = ref)} />
-                </div>
+    const context = this.canvas.getContext("2d");
+    context.drawImage(this.videoPlayer, 0, 0, 480, 360);
+    this.canvas.toBlob(sendFile);
+  };
+
+  render() {
+
+    return (
+      <div className='c-camera-feed'>
+       
+        {!this.canvas && (
+          <>
+            <div className='c-camera-feed__viewer'>
+              {!this.canvas && (
+                <video
+                  ref={(ref) => (this.videoPlayer = ref)}
+                  width='680'
+                  heigh='360'
+                />
+              )}
             </div>
-        );
-    }
+            <CameraAltIcon onClick={this.takePhoto} fontSize='large'/>
+          </>
+        )}
+
+        <div className='c-camera-feed__stage'>
+          <canvas width='680' height='360' ref={(ref) => (this.canvas = ref)} />
+        </div>
+      </div>
+    );
+  }
 }

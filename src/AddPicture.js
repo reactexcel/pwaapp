@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = () => {
   const classes = useStyles();
-  const [source, setSource] = useState("");
+  const [source, setSource] = useState();
+  const[openCommentModal,setOpenCommentModal]=useState(false)
 
   useEffect(()=>{
     navigator.mediaDevices.getUserMedia({video: true})
@@ -37,27 +38,44 @@ const Home = () => {
      
     const mediaStreamTrack = mediaStream.getVideoTracks()[0];
     const imageCapture = new ImageCapture(mediaStreamTrack);
-    console.log(imageCapture);
+
   }
   },[])
 
-  const uploadImage = async file => {
-    console.log(file,'lllllllllll')
-    const formData = new FormData();
-    formData.append('file', file);
-
-    // Connect to a seaweedfs instance
+  const uploadImage = (blob)=> {
+    var newImg = document.createElement('img'),
+    url = URL.createObjectURL(blob);
+    console.log(url,'hhhhhhhhhhhh')
+    setSource(url)
+newImg.onload = function() {
+  // no longer need to read the blob so it's revoked
+  URL.revokeObjectURL(url);
 };
+
+newImg.src = url;
+
+// document.body.appendChild(newImg);
+
+
+   
+};
+const handleAddComment=()=>{
+  if(source){
+    setOpenCommentModal(!openCommentModal)
+  }
+}
   return (
     <div>
+       <Comment open={openCommentModal}/>
       <MenuBar />
       <div className='main'>
         <div className={classes.root}>
           <Camera sendFile={uploadImage}/>
         </div>
       </div>
-    
-      <Comment />
+    <button onClick={handleAddComment}>Add Comment</button>
+   
+
     </div>
   );
 };
