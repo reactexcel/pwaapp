@@ -25,9 +25,8 @@ export default class CameraFeed extends Component {
 
   takePhoto = () => {
     const { sendFile } = this.props;
-
     const context = this.canvas.getContext("2d");
-    context.drawImage(this.videoPlayer, 0, 0, 480, 360);
+    context.drawImage(this.videoPlayer, 0, 0, 680, 360);
     this.canvas.toBlob(sendFile);
   };
 
@@ -40,8 +39,7 @@ export default class CameraFeed extends Component {
               {!this.canvas && (
                 <video
                   ref={(ref) => (this.videoPlayer = ref)}
-                  width='680'
-                  heigh='360'
+                 style={{width:'100%'}}
                 />
               )}
             </div>
@@ -49,8 +47,13 @@ export default class CameraFeed extends Component {
           </>
         )}
 
-        <div className='c-camera-feed__stage' >
-          <canvas width='680' height='360' ref={(ref) => (this.canvas = ref)} />
+        <div className='c-camera-feed__stage'>
+          <canvas
+            width='680'
+            height='360'
+            style={{ width: "80%", height: "50%", margin: "auto" }}
+            ref={(ref) => (this.canvas = ref)}
+          />
         </div>
       </div>
     );

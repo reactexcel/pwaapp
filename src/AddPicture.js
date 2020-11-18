@@ -4,6 +4,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import PhotoCameraRoundedIcon from "@material-ui/icons/PhotoCameraRounded";
 import Comment from "./components/Comment";
 import Camera from "./components/Camera";
+import Grid from "@material-ui/core/Grid";
+import {useDispatch,useSelector} from 'react-redux'
+import {PostRequest} from '../src/redux/actions/actions'
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
@@ -22,12 +25,21 @@ const useStyles = makeStyles((theme) => ({
   input: {
     display: "none",
   },
+  postdata: {
+    boxShadow:
+      "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    border: "1px soild red",
+    padding: "6px",
+  },
 }));
 
-const Home = () => {
+const Home = (props) => {
+  const dispatch=useDispatch()
   const classes = useStyles();
   const [source, setSource] = useState();
   const [openCommentModal, setOpenCommentModal] = useState(false);
+  const [saveComment, setSaveComment] = useState("");
+  const [postData, setPostData] = useState([]);
 
   useEffect(() => {
     navigator.mediaDevices
@@ -41,10 +53,25 @@ const Home = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (postData.length > 0) {
+      localStorage.setItem("post", JSON.stringify(postData));
+    }
+  }, [postData]);
+  useEffect(() => {
+    if (source) {
+      setOpenCommentModal(true);
+    }
+  }, [source]);
   const uploadImage = (blob) => {
+    var reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = function () {
+      var base64data = reader.result;
+      setSource(base64data);
+    };
     var newImg = document.createElement("img"),
       url = URL.createObjectURL(blob);
-
     setSource(url);
     newImg.onload = function () {
       // no longer need to read the blob so it's revoked
@@ -60,14 +87,35 @@ const Home = () => {
       setOpenCommentModal(!openCommentModal);
     }
   };
+
   const handleCancelComment = () => {
     setOpenCommentModal(!openCommentModal);
+  };
+  const handleChange = (e) => {
+    setSaveComment(e.target.value);
+  };
+  const handleAddPost = async () => {
+    if (saveComment !== "") {
+      let postData = {
+        file: source,
+        comment: saveComment,
+      };
+      dispatch(PostRequest(postData))
+      const allPostData = await JSON.parse(localStorage.getItem("post"));
+      const newPostData = allPostData?.length > 0 ? [...allPostData] : [];
+      newPostData.push(postData);
+      await setPostData(newPostData);
+      await setOpenCommentModal(!openCommentModal);
+      props.history.push("/");
+    }
   };
   return (
     <div>
       <Comment
         open={openCommentModal}
         handleCancelComment={handleCancelComment}
+        handleChange={handleChange}
+        handleAddPost={handleAddPost}
       />
       <MenuBar />
       <div className='main'>
@@ -75,7 +123,6 @@ const Home = () => {
           <Camera sendFile={uploadImage} />
         </div>
       </div>
-      <button onClick={handleAddComment}>Add Comment</button>
     </div>
   );
 };

@@ -32,17 +32,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Comment = (props) => {
   const classes = useStyles();
-  const [value, setValue] = React.useState("Controlled");
   const [open, setOpen] = useState(false);
-
   const handleClose = () => {
     setOpen(!open);
-  };
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
-  const handleAddPost = (e) => {
-    e.preventDefault();
   };
 
   return (
@@ -62,12 +54,12 @@ const Comment = (props) => {
             multiline
             rows={4}
             variant='outlined'
-            onChange={handleChange}
+            onChange={props.handleChange}
           />
         </div>
         <div className={classes.addcomments}>
           <TelegramIcon
-            onClick={handleAddPost}
+            onClick={props.handleAddPost}
             className={classes.saveComment}
           />
         </div>

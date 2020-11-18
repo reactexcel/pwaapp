@@ -21,7 +21,7 @@ this.addEventListener("fetch", (event) => {
       caches.match(event.request).then((result) => {
         if (result) {
           //we return here cached url
-
+          console.log(result, "LLLLLLL");
           return result;
         }
         let requestUrl = event.request.clone();

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MenuBar from "../src/components/MenuBar";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { makeStyles } from "@material-ui/core/styles";
-import {} from "react-router-dom";
+import Grid from "@material-ui/core/Grid";
+import PostsList from "../src/components/Posts";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,21 +13,59 @@ const useStyles = makeStyles((theme) => ({
   addPicture: {
     color: "red",
   },
+  postdata: {
+    boxShadow:
+      "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    padding: "6px",
+    margin: "16px",
+  },
+  addNewImage: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 }));
 const Home = (props) => {
+  const [data, setData] = useState();
   const classes = useStyles();
 
   const handleAddPicture = () => {
     props.history.push("/addpicture");
   };
+  useEffect(() => {
+    if (localStorage.getItem("post")) {
+      const allPosts = JSON.parse(localStorage.getItem("post"));
+      setData(allPosts);
+    }
+  }, []);
+
   return (
     <div>
       <MenuBar />
-      <AddCircleOutlineIcon
-        fontSize='large'
-        className={classes.addPicture}
-        onClick={handleAddPicture}
-      />
+
+      {data?.map((post, i) => {
+        return (
+          <Grid
+            container
+            direction='row'
+            justify='space-between'
+            alignItems='center'
+            xs={12}
+            sm={6}
+            className={classes.postdata}
+            spacing={2}
+          >
+            <PostsList key={i} source={post.image} comment={post.comment} />
+          </Grid>
+        );
+      })}
+      <div className={classes.addNewImage}>
+        <AddCircleOutlineIcon
+          fontSize='large'
+          className={classes.addPicture}
+          onClick={handleAddPicture}
+        />
+      </div>
     </div>
   );
 };
