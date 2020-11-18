@@ -3,7 +3,7 @@ import MenuBar from "./components/MenuBar";
 import { makeStyles } from "@material-ui/core/styles";
 import PhotoCameraRoundedIcon from "@material-ui/icons/PhotoCameraRounded";
 import Comment from "./components/Comment";
-import Camera from './components/Camera'
+import Camera from "./components/Camera";
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
@@ -27,55 +27,55 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
   const classes = useStyles();
   const [source, setSource] = useState();
-  const[openCommentModal,setOpenCommentModal]=useState(false)
+  const [openCommentModal, setOpenCommentModal] = useState(false);
 
-  useEffect(()=>{
-    navigator.mediaDevices.getUserMedia({video: true})
-    .then(gotMedia)
-    .catch(error => console.error('getUserMedia() error:', error));
-  
-  function gotMedia(mediaStream) {
-     
-    const mediaStreamTrack = mediaStream.getVideoTracks()[0];
-    const imageCapture = new ImageCapture(mediaStreamTrack);
+  useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then(gotMedia)
+      .catch((error) => console.error("getUserMedia() error:", error));
 
-  }
-  },[])
+    function gotMedia(mediaStream) {
+      const mediaStreamTrack = mediaStream.getVideoTracks()[0];
+      const imageCapture = new ImageCapture(mediaStreamTrack);
+    }
+  }, []);
 
-  const uploadImage = (blob)=> {
-    var newImg = document.createElement('img'),
-    url = URL.createObjectURL(blob);
-    console.log(url,'hhhhhhhhhhhh')
-    setSource(url)
-newImg.onload = function() {
-  // no longer need to read the blob so it's revoked
-  URL.revokeObjectURL(url);
-};
+  const uploadImage = (blob) => {
+    var newImg = document.createElement("img"),
+      url = URL.createObjectURL(blob);
 
-newImg.src = url;
+    setSource(url);
+    newImg.onload = function () {
+      // no longer need to read the blob so it's revoked
+      URL.revokeObjectURL(url);
+    };
 
-// document.body.appendChild(newImg);
+    newImg.src = url;
 
-
-   
-};
-const handleAddComment=()=>{
-  if(source){
-    setOpenCommentModal(!openCommentModal)
-  }
-}
+    // document.body.appendChild(newImg);
+  };
+  const handleAddComment = () => {
+    if (source) {
+      setOpenCommentModal(!openCommentModal);
+    }
+  };
+  const handleCancelComment = () => {
+    setOpenCommentModal(!openCommentModal);
+  };
   return (
     <div>
-       <Comment open={openCommentModal}/>
+      <Comment
+        open={openCommentModal}
+        handleCancelComment={handleCancelComment}
+      />
       <MenuBar />
       <div className='main'>
         <div className={classes.root}>
-          <Camera sendFile={uploadImage}/>
+          <Camera sendFile={uploadImage} />
         </div>
       </div>
-    <button onClick={handleAddComment}>Add Comment</button>
-   
-
+      <button onClick={handleAddComment}>Add Comment</button>
     </div>
   );
 };

@@ -1,11 +1,6 @@
 import React, { Component } from "react";
-import CameraAltIcon from '@material-ui/icons/CameraAlt';
+import CameraAltIcon from "@material-ui/icons/CameraAlt";
 export default class CameraFeed extends Component {
-  /**
-   * Processes available devices and identifies one by the label
-   * @memberof CameraFeed
-   * @instance
-   */
   processDevices(devices) {
     devices.forEach((device) => {
       console.log(device.label);
@@ -13,11 +8,6 @@ export default class CameraFeed extends Component {
     });
   }
 
-  /**
-   * Sets the active device and starts playing the feed
-   * @memberof CameraFeed
-   * @instance
-   */
   async setDevice(device) {
     const { deviceId } = device;
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -28,22 +18,11 @@ export default class CameraFeed extends Component {
     this.videoPlayer.play();
   }
 
-  /**
-   * On mount, grab the users connected devices and process them
-   * @memberof CameraFeed
-   * @instance
-   * @override
-   */
   async componentDidMount() {
     const cameras = await navigator.mediaDevices.enumerateDevices();
     this.processDevices(cameras);
   }
 
-  /**
-   * Handles taking a still image from the video feed on the camera
-   * @memberof CameraFeed
-   * @instance
-   */
   takePhoto = () => {
     const { sendFile } = this.props;
 
@@ -53,10 +32,8 @@ export default class CameraFeed extends Component {
   };
 
   render() {
-
     return (
       <div className='c-camera-feed'>
-       
         {!this.canvas && (
           <>
             <div className='c-camera-feed__viewer'>
@@ -68,11 +45,11 @@ export default class CameraFeed extends Component {
                 />
               )}
             </div>
-            <CameraAltIcon onClick={this.takePhoto} fontSize='large'/>
+            <CameraAltIcon onClick={this.takePhoto} fontSize='large' />
           </>
         )}
 
-        <div className='c-camera-feed__stage'>
+        <div className='c-camera-feed__stage' >
           <canvas width='680' height='360' ref={(ref) => (this.canvas = ref)} />
         </div>
       </div>
