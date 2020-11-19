@@ -77,16 +77,9 @@ const Home = (props) => {
       // no longer need to read the blob so it's revoked
       URL.revokeObjectURL(url);
     };
-
     newImg.src = url;
-
-    // document.body.appendChild(newImg);
   };
-  const handleAddComment = () => {
-    if (source) {
-      setOpenCommentModal(!openCommentModal);
-    }
-  };
+  
 
   const handleCancelComment = () => {
     setOpenCommentModal(!openCommentModal);

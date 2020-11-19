@@ -1,15 +1,17 @@
-import * as actions from "../actionTypes/actionTypes";
+import * as actions from "../../redux/actionTypes/actionTypes";
 
-const initialState = {
+const intialState = {
   isLoading: false,
   isSuccess: false,
   isError: false,
+  data:[]
 };
 
-const listPostReducer = (state = initialState, action) => {
+const imageReducer = (state = intialState, action) => {
+
 
   switch (action.type) {
-    case actions.GET_POSTS_LIST_REQUEST:
+    case actions.IMAGE_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -17,15 +19,17 @@ const listPostReducer = (state = initialState, action) => {
         isError: false,
       };
 
-    case actions.GET_POSTS_LIST_SUCCESS:
+    case actions.IMAGE_SUCCESS:
+      const newData=[...state.data,action.payload.response.finalData];
+
       return {
         ...state,
         isLoading: false,
-        data: action.payload.response.finalData,
+        data: newData,
         isError: false,
         isSuccess: true,
       };
-    case actions.GET_POSTS_LIST_ERROR:
+    case actions.IMAGE_ERROR:
       return {
         ...state,
         isLoading: false,
@@ -38,4 +42,4 @@ const listPostReducer = (state = initialState, action) => {
   }
 };
 
-export default listPostReducer;
+export default imageReducer;

@@ -2,6 +2,7 @@ import * as actions from "../actionTypes/actionTypes";
 import { PostListSuccess,PostListError} from "../actions/actions";
 import { takeLatest, call, put } from "redux-saga/effects";
 // import config from "../../config/config";
+import {BASE_URL} from '../../services/api'
 import axios from "axios";
 
 export function* listPosts(action) {
@@ -9,13 +10,12 @@ export function* listPosts(action) {
   
 
     let response = yield call(
-      axios.post,
-      // `${config.localUrl}`,
+      axios.get,
+      `${BASE_URL}/images`,
 
     );
 
     let data = response.data;
-
     if (data) {
       yield put(PostListSuccess({ response: data }));
     } else {

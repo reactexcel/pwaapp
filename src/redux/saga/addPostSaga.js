@@ -1,7 +1,7 @@
 import * as actions from "../actionTypes/actionTypes";
 import { PostSuccess, PostError } from "../actions/actions";
 import { takeLatest, call, put } from "redux-saga/effects";
-// import config from "../../config/config";
+import { BASE_URL } from "../../services/api";
 import axios from "axios";
 
 export function* addPost(action) {
@@ -9,7 +9,7 @@ export function* addPost(action) {
   try {
     let response = yield call(
       axios.post,
-      `http://176.9.137.77:8004/users/upload-avatar`,
+      `${BASE_URL}/upload-avatar`,
       action.payload
     );
 
