@@ -100,7 +100,7 @@ const Home = (props) => {
         file: source,
         comment: saveComment,
       };
-      dispatch(PostRequest(postData))
+     await dispatch(PostRequest(postData))
       const allPostData = await JSON.parse(localStorage.getItem("post"));
       const newPostData = allPostData?.length > 0 ? [...allPostData] : [];
       newPostData.push(postData);

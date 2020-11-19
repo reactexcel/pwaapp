@@ -54,8 +54,8 @@ const Home = (props) => {
             sm={6}
             className={classes.postdata}
             spacing={2}
-          >
-            <PostsList key={i} source={post.image} comment={post.comment} />
+          >{console.log(post,'PPPPP')}
+            <PostsList key={i} source={post.file} comment={post.comment} />
           </Grid>
         );
       })}

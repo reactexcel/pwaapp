@@ -31,3 +31,17 @@ this.addEventListener("fetch", (event) => {
     );
   }
 });
+
+this.addEventListener('activate',(event)=>{
+  const cacheWhiteList=[];
+  cacheWhiteList.push(cacheData);
+  event.waitUntil(
+    caches.keys().then((cacheNames)=>Promise.all(
+      cacheNames.map((cacheName)=>{
+        if(!cacheWhiteList.includes(cacheName)){
+          return caches.delete(cacheName);
+        }
+      })
+    ))
+  )
+})
