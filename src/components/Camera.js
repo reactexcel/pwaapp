@@ -51,7 +51,7 @@ export default class CameraFeed extends Component {
           <canvas
             width='680'
             height='360'
-            style={{ width: "100%", height: "90%", margin: "auto" }}
+            style={{ width: "100%", height: "95%", margin: "auto" }}
             ref={(ref) => (this.canvas = ref)}
           />
         </div>

@@ -50,7 +50,7 @@ const Home = (props) => {
 
     function gotMedia(mediaStream) {
       const mediaStreamTrack = mediaStream.getVideoTracks()[0];
-      // const imageCapture = new ImageCapture(mediaStreamTrack);
+      const imageCapture = new ImageCapture(mediaStreamTrack);
     }
   }, []);
 
@@ -91,7 +91,7 @@ const Home = (props) => {
   const handleAddPost = async () => {
     if (saveComment !== "") {
       let postData = {
-        image: source,
+        file: source,
         comment: saveComment,
       };
       await dispatch(PostRequest(postData));
@@ -118,6 +118,7 @@ const Home = (props) => {
           <Camera sendFile={uploadImage} />
         </div>
       </div>
+      {/* <canvas id='image_canvas'></canvas> */}
     </div>
   );
 };

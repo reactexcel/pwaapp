@@ -47,6 +47,7 @@ const Home = (props) => {
   const dispatch = useDispatch();
   const allPostList = useSelector((state) => state.PostListstatus);
   const imageUrl = useSelector((state) => state.Imagestatus);
+  const postDataStatus = useSelector((state) => state.AddPoststatus);
   const [offlineError, setOfflineError] = useState("");
   const [data, setData] = useState();
 
@@ -54,25 +55,31 @@ const Home = (props) => {
   const classes = useStyles();
 
   const handleAddPicture = () => {
-    const offlinePosts = JSON.parse(localStorage.getItem("newPost"));
-    if (!offlinePosts || offlinePosts?.length > 3) {
+    // const offlinePosts = JSON.parse(localStorage.getItem("newPost"));
+    // console.log(!offlinePosts || offlinePosts?.length > 3);
+    // if (!offlinePosts || offlinePosts?.length > 3) {
       props.history.push("/addpicture");
-    }
-    if (offlinePosts?.length < 3) {
-      setOfflineError("No more posts can be added");
-    }
+    // }
+    // if (offlinePosts?.length < 3) {
+    //   setOfflineError("No more posts can be added");
+    // }
   };
   const isOnline = navigator.onLine;
+
   useEffect(() => {
+    let newPosts = JSON.parse(localStorage.getItem("newPost"));
+    newPosts?.map((val) => {
+       dispatch(PostRequest(val));
+    });
+
     if (localStorage.getItem("post")) {
       const allPosts = JSON.parse(localStorage.getItem("post"));
       setData(allPosts);
     }
     dispatch(PostListRequest(page));
-    let newPosts = JSON.parse(localStorage.getItem("newPost"));
-    newPosts?.map(async (val) => {
-      await PostRequest(val);
-    });
+
+   
+
   }, []);
 
   useEffect(async () => {
@@ -95,7 +102,7 @@ const Home = (props) => {
   }, [imageUrl?.data.length]);
 
   useEffect(async () => {
-    if (allPostList.data && isOnline) {
+    if (allPostList.data && isOnline && !postDataStatus.isLoading) {
       allPostList.data.map(async (allpost) => {
         await dispatch(ImageRequest(allpost._id));
       });
@@ -110,7 +117,7 @@ const Home = (props) => {
   return (
     <div>
       <MenuBar />
-      {!navigator.onLine || allPostList.isError || imageUrl.isError ? (
+      {!navigator.onLine ? (
         <div>
           <Alert severity='warning'>
             You are in offline mode!! {offlineError}
@@ -133,7 +140,11 @@ const Home = (props) => {
               md={5}
               key={i}
             >
-              <PostsList key={i} source={post.image} comment={post.comment} />
+              <PostsList
+                key={i}
+                source={post.image || post.file}
+                comment={post.comment}
+              />
             </Grid>
           );
         })}

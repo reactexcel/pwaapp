@@ -7,6 +7,7 @@ import axios from "axios";
 export function* addPost(action) {
  const newPosts=JSON.parse(localStorage.getItem('newPost'))||[]
  const posts=[...newPosts,action.payload]
+ console.log('saaaaaaaaaaa',action.payload)
   try {
     let response = yield call(
       axios.post,
@@ -18,7 +19,6 @@ export function* addPost(action) {
 
     if (data) {
       yield put(PostSuccess({ response: data }));
-      yield put (PostListRequest())
       localStorage.removeItem('newPost')
     } else {
       yield put(PostError({ error: true }));

@@ -16,7 +16,7 @@ export function* listPosts(action) {
     let data = response.data;
     if (data) {
       yield put(PostListSuccess({ response: data }));
-      localStorage.removeItem('newPost')
+
     } else {
       yield put(PostListError({ error: true }));
     }

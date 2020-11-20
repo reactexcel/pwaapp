@@ -16,7 +16,6 @@ export function* imageRequestSaga(action) {
 
     if (data) {
       yield put(ImageSuccess({ response: data }));
-      localStorage.removeItem('newPost')
     } else {
       yield put(ImageError({ error: true }));
     }
