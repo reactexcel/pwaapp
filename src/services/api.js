@@ -1,1 +1,1 @@
-export const BASE_URL='https://114692081907.ngrok.io/users'
+export const BASE_URL='https://new-pwa-app.herokuapp.com/users'

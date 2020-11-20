@@ -81,9 +81,9 @@ const Home = (props) => {
   }, []);
 
   useEffect(async () => {
-    if (imageUrl?.data && allPostList?.data && isOnline) {
+    if (imageUrl?.data && allPostList&&allPostList?.data?.length && isOnline) {
       const filteredArray = await Promise.all(
-        allPostList?.data.map((val) => {
+        allPostList.data.map((val) => {
           const imageArray = imageUrl?.data.find((el) => {
             return el._id == val._id;
           });
@@ -100,10 +100,13 @@ const Home = (props) => {
   }, [imageUrl?.data.length]);
 
   useEffect(async () => {
-    if (allPostList.data && isOnline && !postDataStatus.isLoading) {
-      allPostList.data.map(async (allpost) => {
+    if (allPostList&&allPostList?.data && isOnline && !postDataStatus.isLoading) {
+      if(allPostList&& allPostList?.data?.length){
+     allPostList.data.map(async (allpost) => {
         await dispatch(ImageRequest(allpost._id));
       });
+      }
+  
     }
   }, [allPostList.data]);
 

@@ -36,10 +36,11 @@ export default class CameraFeed extends Component {
         {!this.canvas && (
           <>
             <div className='c-camera-feed__viewer'>
+              
               {!this.canvas && (
                 <video
                   ref={(ref) => (this.videoPlayer = ref)}
-                 style={{width:'100%'}}
+                 style={{width:'90%'}}
                 />
               )}
             </div>
@@ -48,9 +49,9 @@ export default class CameraFeed extends Component {
         )}
 
         <div className='c-camera-feed__stage'>
-          <canvas
+         <canvas
             width='680'
-            height='360'
+            height='460'
             style={{ width: "100%", height: "95%", margin: "auto" }}
             ref={(ref) => (this.canvas = ref)}
           />

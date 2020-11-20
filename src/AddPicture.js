@@ -113,7 +113,7 @@ const Home = (props) => {
         handleAddPost={handleAddPost}
       />
       <MenuBar />
-      <div className='main'>
+      <div>
         <div className={classes.root}>
           <Camera sendFile={uploadImage} />
         </div>
