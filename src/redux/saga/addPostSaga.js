@@ -20,6 +20,7 @@ export function* addPost(action) {
     if (data) {
       yield put(PostSuccess({ response: data }));
       localStorage.removeItem('newPost')
+      yield put(PostListRequest())
     } else {
       yield put(PostError({ error: true }));
     }

@@ -68,8 +68,8 @@ const Home = (props) => {
 
   useEffect(() => {
     let newPosts = JSON.parse(localStorage.getItem("newPost"));
-    newPosts?.map((val) => {
-       dispatch(PostRequest(val));
+    newPosts?.map(async(val) => {
+      await dispatch(PostRequest(val));
     });
 
     if (localStorage.getItem("post")) {
@@ -77,8 +77,6 @@ const Home = (props) => {
       setData(allPosts);
     }
     dispatch(PostListRequest(page));
-
-   
 
   }, []);
 
