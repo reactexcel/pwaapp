@@ -7,7 +7,7 @@ const initialState = {
 };
 
 const addPostReducer = (state = initialState, action) => {
-  console.log('hhhhhhhhhhh')
+
   switch (action.type) {
     case actions.POST_REQUEST:
       return {

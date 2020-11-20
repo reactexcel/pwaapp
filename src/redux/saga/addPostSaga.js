@@ -1,11 +1,12 @@
 import * as actions from "../actionTypes/actionTypes";
-import { PostSuccess, PostError } from "../actions/actions";
-import { takeLatest, call, put } from "redux-saga/effects";
+import { PostSuccess, PostError ,PostListRequest} from "../actions/actions";
+import { call, put, takeEvery } from "redux-saga/effects";
 import { BASE_URL } from "../../services/api";
 import axios from "axios";
 
 export function* addPost(action) {
-  console.log(action, "callledd");
+ const newPosts=JSON.parse(localStorage.getItem('newPost'))||[]
+ const posts=[...newPosts,action.payload]
   try {
     let response = yield call(
       axios.post,
@@ -17,14 +18,17 @@ export function* addPost(action) {
 
     if (data) {
       yield put(PostSuccess({ response: data }));
+      yield put (PostListRequest())
+      localStorage.removeItem('newPost')
     } else {
       yield put(PostError({ error: true }));
     }
   } catch (error) {
+    localStorage.setItem('newPost',JSON.stringify(posts))
     yield put(PostError({ error: error }));
   }
 }
 
 export function* addPostsSaga() {
-  yield takeLatest(actions.POST_REQUEST, addPost);
+  yield takeEvery(actions.POST_REQUEST, addPost);
 }

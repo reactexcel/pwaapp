@@ -3,7 +3,7 @@ import CameraAltIcon from "@material-ui/icons/CameraAlt";
 export default class CameraFeed extends Component {
   processDevices(devices) {
     devices.forEach((device) => {
-      console.log(device.label);
+      // console.log(device.label);
       this.setDevice(device);
     });
   }
@@ -51,7 +51,7 @@ export default class CameraFeed extends Component {
           <canvas
             width='680'
             height='360'
-            style={{ width: "80%", height: "50%", margin: "auto" }}
+            style={{ width: "100%", height: "90%", margin: "auto" }}
             ref={(ref) => (this.canvas = ref)}
           />
         </div>

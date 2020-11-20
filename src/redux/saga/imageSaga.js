@@ -1,10 +1,11 @@
 import * as actions from "../actionTypes/actionTypes";
 import { ImageSuccess,ImageError} from "../actions/actions";
-import { takeLatest, call, put,takeEvery } from "redux-saga/effects";
+import { call, put,takeEvery } from "redux-saga/effects";
 import { BASE_URL } from "../../services/api";
 import axios from "axios";
 
 export function* imageRequestSaga(action) {
+
     const id=action.payload
   try {
     let response = yield call(
@@ -15,7 +16,7 @@ export function* imageRequestSaga(action) {
 
     if (data) {
       yield put(ImageSuccess({ response: data }));
-
+      localStorage.removeItem('newPost')
     } else {
       yield put(ImageError({ error: true }));
     }

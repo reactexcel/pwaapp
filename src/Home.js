@@ -5,8 +5,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import PostsList from "../src/components/Posts";
 import Fab from "@material-ui/core/Fab";
-import { PostListRequest, ImageRequest } from "../src/redux/actions/actions";
+import Alert from "@material-ui/lab/Alert";
+import {
+  PostListRequest,
+  ImageRequest,
+  PostRequest,
+} from "../src/redux/actions/actions";
 import { useDispatch, useSelector } from "react-redux";
+import Pagination from "@material-ui/lab/Pagination";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
       "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
     padding: "6px",
     // margin: "16px",
+    width: "90%",
+    marginTop: "16px",
+    minHeight: "100px",
   },
   addNewImage: {
     display: "flex",
@@ -26,22 +35,48 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "16px",
     marginRight: "16px",
   },
+  Pagination: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginTop: "8px",
+    marginRight: "8px",
+  },
 }));
 
 const Home = (props) => {
   const dispatch = useDispatch();
   const allPostList = useSelector((state) => state.PostListstatus);
   const imageUrl = useSelector((state) => state.Imagestatus);
+  const [offlineError, setOfflineError] = useState("");
   const [data, setData] = useState();
-  const [urlData, setUrlData] = useState([]);
+
+  const [page, setPage] = useState(1);
   const classes = useStyles();
 
   const handleAddPicture = () => {
-    props.history.push("/addpicture");
+    const offlinePosts = JSON.parse(localStorage.getItem("newPost"));
+    if (!offlinePosts || offlinePosts?.length > 3) {
+      props.history.push("/addpicture");
+    }
+    if (offlinePosts?.length < 3) {
+      setOfflineError("No more posts can be added");
+    }
   };
+  const isOnline = navigator.onLine;
+  useEffect(() => {
+    if (localStorage.getItem("post")) {
+      const allPosts = JSON.parse(localStorage.getItem("post"));
+      setData(allPosts);
+    }
+    dispatch(PostListRequest(page));
+    let newPosts = JSON.parse(localStorage.getItem("newPost"));
+    newPosts?.map(async (val) => {
+      await PostRequest(val);
+    });
+  }, []);
 
   useEffect(async () => {
-    if (imageUrl?.data && allPostList?.data) {
+    if (imageUrl?.data && allPostList?.data && isOnline) {
       const filteredArray = await Promise.all(
         allPostList?.data.map((val) => {
           const imageArray = imageUrl?.data.find((el) => {
@@ -54,34 +89,37 @@ const Home = (props) => {
 
       if (filteredArray.length) {
         setData(filteredArray);
+        localStorage.setItem("post", JSON.stringify(filteredArray));
       }
     }
   }, [imageUrl?.data.length]);
 
   useEffect(async () => {
-    if (allPostList.data) {
+    if (allPostList.data && isOnline) {
       allPostList.data.map(async (allpost) => {
         await dispatch(ImageRequest(allpost._id));
       });
     }
   }, [allPostList.data]);
 
-  useEffect(() => {
-    if (localStorage.getItem("post")) {
-      const allPosts = JSON.parse(localStorage.getItem("post"));
-      setData(allPosts);
-    }
-    dispatch(PostListRequest());
-  }, []);
-
-  const isOnline = navigator.onLine;
+  const handlePagination = (event, val) => {
+    dispatch(PostListRequest(val));
+    setPage(val);
+  };
 
   return (
     <div>
       <MenuBar />
+      {!navigator.onLine || allPostList.isError || imageUrl.isError ? (
+        <div>
+          <Alert severity='warning'>
+            You are in offline mode!! {offlineError}
+          </Alert>
+        </div>
+      ) : null}
       <Grid
         direction='row'
-        justify='space-between'
+        justify='space-around'
         alignItems='center'
         container
       >
@@ -91,15 +129,23 @@ const Home = (props) => {
               item
               className={classes.postdata}
               xs={12}
-              sm={6}
-              md={6}
-              spacing={2}
+              sm={5}
+              md={5}
+              key={i}
             >
               <PostsList key={i} source={post.image} comment={post.comment} />
             </Grid>
           );
         })}
       </Grid>
+      <div className={classes.Pagination}>
+        <Pagination
+          count={allPostList?.totalpages}
+          color='primary'
+          page={page}
+          onChange={handlePagination}
+        />
+      </div>
       <div className={classes.addNewImage}>
         <Fab color='primary'>
           <AddIcon fontSize='large' onClick={handleAddPicture} />

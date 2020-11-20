@@ -22,6 +22,7 @@ const listPostReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         data: action.payload.response.finalData,
+        totalpages:action.payload.response.totalPages,
         isError: false,
         isSuccess: true,
       };

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import MenuBar from "./components/MenuBar";
 import { makeStyles } from "@material-ui/core/styles";
-import PhotoCameraRoundedIcon from "@material-ui/icons/PhotoCameraRounded";
 import Comment from "./components/Comment";
 import Camera from "./components/Camera";
-import Grid from "@material-ui/core/Grid";
-import {useDispatch,useSelector} from 'react-redux'
-import {PostRequest} from '../src/redux/actions/actions'
+import { useDispatch, useSelector } from "react-redux";
+import { PostRequest } from "../src/redux/actions/actions";
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
@@ -34,22 +32,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Home = (props) => {
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [source, setSource] = useState();
   const [openCommentModal, setOpenCommentModal] = useState(false);
   const [saveComment, setSaveComment] = useState("");
   const [postData, setPostData] = useState([]);
 
+
   useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({ video: true })
       .then(gotMedia)
-      .catch((error) => console.error("getUserMedia() error:", error));
+      .catch((error) => 
+      console.error("getUserMedia() error:"
+      , error));
 
     function gotMedia(mediaStream) {
       const mediaStreamTrack = mediaStream.getVideoTracks()[0];
-      const imageCapture = new ImageCapture(mediaStreamTrack);
+      // const imageCapture = new ImageCapture(mediaStreamTrack);
     }
   }, []);
 
@@ -63,6 +64,7 @@ const Home = (props) => {
       setOpenCommentModal(true);
     }
   }, [source]);
+
   const uploadImage = (blob) => {
     var reader = new FileReader();
     reader.readAsDataURL(blob);
@@ -79,7 +81,6 @@ const Home = (props) => {
     };
     newImg.src = url;
   };
-  
 
   const handleCancelComment = () => {
     setOpenCommentModal(!openCommentModal);
@@ -90,16 +91,17 @@ const Home = (props) => {
   const handleAddPost = async () => {
     if (saveComment !== "") {
       let postData = {
-        file: source,
+        image: source,
         comment: saveComment,
       };
-     await dispatch(PostRequest(postData))
+      await dispatch(PostRequest(postData));
       const allPostData = await JSON.parse(localStorage.getItem("post"));
-      const newPostData = allPostData?.length > 0 ? [...allPostData] : [];
-      newPostData.push(postData);
+      const newPostData = await allPostData?.length > 0 ? [...allPostData] : [];
+      await newPostData.push(postData);
       await setPostData(newPostData);
+      await localStorage.setItem('post',JSON.stringify(newPostData))
       await setOpenCommentModal(!openCommentModal);
-      props.history.push("/");
+     await props.history.push("/");
     }
   };
   return (
